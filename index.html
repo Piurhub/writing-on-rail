@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ข้อความเขียนบนราว</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E✍️%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=Mali:wght@300;400&family=Itim&family=Sriracha&family=Charmonman&family=Playpen+Sans+Thai:wght@300;400&display=swap">
+<style>
+:root{--bg:#eef1e6;--panel:#fff;--ink:#1c2b26;--mute:#5d6b64;--line:#cfd8c8;--acc:#2f6b57;--acc-ink:#fff;--gold:#b8921a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1d19;--panel:#16282f;--panel:#162924;--ink:#f1ebd6;--mute:#9db0a6;--line:#2b443c;--acc:#e8c547;--acc-ink:#17251f;--gold:#e8c547}}
+:root[data-theme="dark"]{--bg:#0f1d19;--panel:#162924;--ink:#f1ebd6;--mute:#9db0a6;--line:#2b443c;--acc:#e8c547;--acc-ink:#17251f;--gold:#e8c547}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans Thai",system-ui,sans-serif}
+header{max-width:1120px;margin:0 auto;padding:28px 20px 8px}
+h1{font:400 clamp(26px,4vw,38px)/1.2 "Mali","IBM Plex Sans Thai",sans-serif;margin:0 0 4px;color:var(--gold)}
+header p{margin:0;color:var(--mute)}
+main{max-width:1120px;margin:0 auto;padding:16px 20px 40px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;min-height:260px;display:flex;align-items:center;justify-content:center}
+canvas{max-width:100%;height:auto;border-radius:8px;touch-action:none;cursor:crosshair;display:block}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;min-height:340px;border:2px dashed var(--line);border-radius:10px;cursor:pointer;text-align:center;color:var(--mute);padding:20px}
+.drop.over,.drop:hover{border-color:var(--acc)}
+.drop b{font:400 22px "Mali",sans-serif;color:var(--ink)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px}
+.tabs{display:flex;gap:6px}
+.tabs button{flex:1;padding:8px 6px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;font:inherit;font-size:13px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
+label{display:grid;gap:4px;font-size:13px;color:var(--mute)}
+label span b{float:right;font-weight:400;color:var(--ink)}
+input[type=text],select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:15px}
+input[type=color]{width:100%;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:2px}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.row{display:grid;grid-template-columns:1fr 90px;gap:10px}
+hr{border:0;border-top:1px solid var(--line);margin:0}
+h2{font-size:13px;margin:0;font-weight:600}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{padding:10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+.btn.main{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible,.drop:focus-within{outline:2px solid var(--acc);outline-offset:2px}
+.hint{font-size:12.5px;color:var(--mute);margin:0}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);max-width:min(92vw,900px);padding:16px}
+dialog img{max-width:100%;max-height:70vh;display:block;margin:10px auto;border-radius:8px}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+[hidden]{display:none!important}
+.stage{flex-direction:column;gap:10px}
+.thumbs{display:flex;gap:8px;overflow-x:auto;width:100%;padding:2px}
+.th{flex:0 0 auto;width:64px;height:64px;padding:0;border:2px solid var(--line);border-radius:8px;overflow:hidden;background:none;cursor:pointer}
+.th[aria-selected=true]{border-color:var(--acc)}
+.th img{width:100%;height:100%;object-fit:cover;display:block}
+#gen{display:grid;gap:10px}
+.opts{display:grid;gap:6px}
+.opt{text-align:left;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.opt b{display:block;color:var(--gold);font-weight:600}
+.opt:hover{border-color:var(--acc)}
+</style>
+</head>
+<body>
+<header>
+  <h1>ข้อความเขียนบนราว</h1>
+  <p>อัปโหลดรูป พิมพ์ข้อความ แล้วลากมุมให้ข้อความเอียงตามพื้นผิวในภาพ</p>
+</header>
+<main>
+  <section class="stage">
+    <label class="drop" id="drop"><b>ลากรูปมาวางที่นี่</b><span>หรือแตะเพื่อเลือกรูปจากเครื่อง</span><input id="file" type="file" accept="image/*" multiple hidden></label>
+    <canvas id="cv" hidden></canvas>
+    <div class="thumbs" id="thumbs" hidden></div>
+  </section>
+  <aside class="panel">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <label>ข้อความ<input id="tx" type="text"></label>
+    <div class="row">
+      <label>ฟอนต์<select id="fn"><option>Mali</option><option>Playpen Sans Thai</option><option>Itim</option><option>Sriracha</option><option>Charmonman</option></select></label>
+      <label>สี<input id="co" type="color"></label>
+    </div>
+    <label><span>ขนาด<b id="szv"></b></span><input id="sz" type="range" min="10" max="100"></label>
+    <label><span>ความทึบ<b id="opv"></b></span><input id="op" type="range" min="30" max="100"></label>
+    <p class="hint">ลากจุดที่มุมทั้งสี่ของกรอบบนรูปเพื่อปรับมุมเอียง ลากข้างในกรอบเพื่อย้ายทั้งข้อความ</p>
+    <button class="btn" id="reset" type="button">จัดกรอบข้อความใหม่</button>
+    <hr>
+    <h2>เงาและโทนภาพ</h2>
+    <label><span>เงาข้อความ<b id="shv"></b></span><input id="sh" type="range" min="0" max="10" value="3"></label>
+    <label><span>โทนอุ่น<b id="warmv"></b></span><input id="warm" type="range" min="0" max="80" value="25"></label>
+    <label><span>คอนทราสต์<b id="conv"></b></span><input id="con" type="range" min="0" max="80" value="30"></label>
+    <label><span>ขอบมืด<b id="vigv"></b></span><input id="vig" type="range" min="0" max="80" value="35"></label>
+    <hr>
+    <div id="gen">
+      <h2>ให้ Claude คิดข้อความให้</h2>
+      <label>Anthropic API key<input id="apikey" type="password" autocomplete="off" placeholder="sk-ant-..."></label>
+      <p class="hint">key เก็บในเบราว์เซอร์ของคุณเท่านั้น ห้ามใส่ลงในโค้ดที่อัปขึ้น GitHub</p>
+      <label>ธีมหรือโอกาส (ไม่บังคับ)<input id="theme" type="text" placeholder="เช่น ปิดเทอม วันเกิดเพื่อน เปิดเทอมใหม่"></label>
+      <div class="btns"><button class="btn main" id="genOne" type="button">คิดข้อความ</button><button class="btn" id="genAll" type="button" hidden>ทำทุกรูป</button></div>
+      <div class="opts" id="opts"></div>
+      <p class="hint" id="genmsg"></p>
+    </div>
+    <h2>ขนาดและความคมชัดตอนบันทึก</h2>
+    <label>ขนาดภาพ<select id="esz"><option value="0">ตามต้นฉบับ</option><option value="1080">ด้านยาว 1080 px</option><option value="1920">ด้านยาว 1920 px</option><option value="3840">ด้านยาว 3840 px (ขยาย)</option></select></label>
+    <label><span>ความคมชัด<b id="shpv"></b></span><input id="shp" type="range" min="0" max="100" value="30"></label>
+    <label><span>คุณภาพไฟล์ JPG<b id="jqv"></b></span><input id="jq" type="range" min="60" max="100" value="93"></label>
+    <p class="hint">ขนาด ความคมชัด และคุณภาพมีผลกับไฟล์ที่บันทึก ไม่เปลี่ยนภาพตัวอย่างบนหน้าจอ</p>
+    <div class="btns">
+      <button class="btn" id="change" type="button">เพิ่มรูป</button>
+      <button class="btn main" id="save" type="button">บันทึกรูปนี้</button>
+      <button class="btn main" id="saveAll" type="button" hidden style="grid-column:1/-1">บันทึกทุกรูป</button>
+    </div>
+  </aside>
+</main>
+<dialog id="dlg">
+  <strong>รูปพร้อมแล้ว</strong>
+  <img id="out" alt="รูปที่ทำเสร็จ">
+  <p class="hint">คลิกขวาที่รูป (หรือกดค้างบนมือถือ) แล้วเลือก “บันทึกรูปภาพ”</p>
+  <button class="btn" id="close" type="button">ปิด</button>
+</dialog>
+<script>
+const FONTS={"Mali":300,"Playpen Sans Thai":300,"Itim":400,"Sriracha":400,"Charmonman":400};
+const $=s=>document.querySelector(s);
+const cv=$('#cv'),ctx=cv.getContext('2d'),tmp=document.createElement('canvas');
+let img=null,act=0,drag=null;
+const DEF=[
+ {n:'ข้อความหลัก',text:'ขอให้ประสบความสำเร็จในทุกเส้นทางที่เลือกเดิน',font:'Mali',color:'#f4eedb',op:90,wf:.92,cx:.5,cy:.72,rise:.24,r:.8},
+ {n:'หัวข้อ',text:'“ชื่อหัวข้อ”',font:'Mali',color:'#e8c547',op:100,wf:.4,cx:.5,cy:.15,rise:0,r:1},
+ {n:'วันที่',text:'20 กุมภาพันธ์ 2569',font:'Mali',color:'#f4eedb',op:100,wf:.4,cx:.5,cy:.07,rise:0,r:1}
+];
+let P=[],cur=0;const mk=()=>DEF.map(d=>({...d}));let L=mk();
+const loadFont=f=>document.fonts.load(`${FONTS[f]} 100px "${f}"`,'ก');
+const fontsReady=Promise.all(Object.keys(FONTS).map(loadFont));
+
+function tex(l){
+  const k=l.text+l.font+l.color;if(l._k===k)return l._t;
+  const c=document.createElement('canvas'),x=c.getContext('2d'),f=`${FONTS[l.font]} 100px "${l.font}", sans-serif`;
+  x.font=f;c.width=Math.ceil(x.measureText(l.text||' ').width)+40;c.height=170;
+  x.font=f;x.fillStyle=l.color;x.textBaseline='middle';x.fillText(l.text,20,88);
+  l._k=k;l._t=c;return c;
+}
+function fit(l){
+  const W=cv.width,H=cv.height,t=tex(l),ar=t.width/t.height;
+  const w=l.wf*W,h=w/ar,cx=l.cx*W,cy=l.cy*H,rs=l.rise*H/2,hl=h/2,hr=h/2*l.r;
+  l.q=[[cx-w/2,cy+rs-hl],[cx+w/2,cy-rs-hr],[cx+w/2,cy-rs+hr],[cx-w/2,cy+rs+hl]];l.touched=false;
+}
+function tri(T,im,s0,s1,s2,d0,d1,d2){
+  T.save();
+  const cx=(d0[0]+d1[0]+d2[0])/3,cy=(d0[1]+d1[1]+d2[1])/3;
+  const ex=p=>{const dx=p[0]-cx,dy=p[1]-cy,n=Math.hypot(dx,dy)||1;return[p[0]+dx/n*.7,p[1]+dy/n*.7]};
+  const e0=ex(d0),e1=ex(d1),e2=ex(d2);
+  T.beginPath();T.moveTo(e0[0],e0[1]);T.lineTo(e1[0],e1[1]);T.lineTo(e2[0],e2[1]);T.closePath();T.clip();
+  const den=s0[0]*(s1[1]-s2[1])+s1[0]*(s2[1]-s0[1])+s2[0]*(s0[1]-s1[1]);
+  const A=(i,j)=>(d0[j]*(s1[i]-s2[i])+d1[j]*(s2[i]-s0[i])+d2[j]*(s0[i]-s1[i]))/den;
+  const m11=A(1,0),m12=A(1,1),m21=-A(0,0),m22=-A(0,1);
+  const E=j=>(d0[j]*(s1[0]*s2[1]-s2[0]*s1[1])+d1[j]*(s2[0]*s0[1]-s0[0]*s2[1])+d2[j]*(s0[0]*s1[1]-s1[0]*s0[1]))/den;
+  T.transform(m11,m12,m21,m22,E(0),E(1));T.drawImage(im,0,0);T.restore();
+}
+function warp(T,t,q){
+  const [p0,p1,p2,p3]=q;
+  const sx=p0[0]-p1[0]+p2[0]-p3[0],sy=p0[1]-p1[1]+p2[1]-p3[1];
+  const dx1=p1[0]-p2[0],dx2=p3[0]-p2[0],dy1=p1[1]-p2[1],dy2=p3[1]-p2[1];
+  const det=dx1*dy2-dx2*dy1;let g=0,h=0;
+  if(Math.abs(det)>1e-9){g=(sx*dy2-dx2*sy)/det;h=(dx1*sy-sx*dy1)/det}
+  const a=p1[0]-p0[0]+g*p1[0],b=p3[0]-p0[0]+h*p3[0],c=p0[0],d=p1[1]-p0[1]+g*p1[1],e=p3[1]-p0[1]+h*p3[1],f=p0[1];
+  const P=(u,v)=>{const w=g*u+h*v+1;return[(a*u+b*v+c)/w,(d*u+e*v+f)/w]};
+  const N=36,M=4,tw=t.width,th=t.height;
+  for(let i=0;i<N;i++)for(let j=0;j<M;j++){
+    const u0=i/N,u1=(i+1)/N,v0=j/M,v1=(j+1)/M;
+    tri(T,t,[u0*tw,v0*th],[u1*tw,v0*th],[u0*tw,v1*th],P(u0,v0),P(u1,v0),P(u0,v1));
+    tri(T,t,[u1*tw,v0*th],[u1*tw,v1*th],[u0*tw,v1*th],P(u1,v0),P(u1,v1),P(u0,v1));
+  }
+}
+function render(handles=true){
+  if(!img)return;
+  const W=cv.width,H=cv.height,v=id=>+$('#'+id).value/100;
+  ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.clearRect(0,0,W,H);ctx.drawImage(img,0,0,W,H);
+  if(v('con')){ctx.globalCompositeOperation='overlay';ctx.globalAlpha=v('con');ctx.drawImage(img,0,0,W,H)}
+  if(v('warm')){ctx.globalCompositeOperation='soft-light';ctx.globalAlpha=v('warm');ctx.fillStyle='#ffa53c';ctx.fillRect(0,0,W,H)}
+  ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
+  if(v('vig')){const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.hypot(W,H)*.55);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${v('vig')})`);ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
+  const sh=+$('#sh').value*W/1000;
+  tmp.width=W;tmp.height=H;
+  for(const l of L){
+    if(!l.text.trim())continue;
+    tmp.width=W;warp(tmp.getContext('2d'),tex(l),l.q);
+    ctx.save();ctx.globalAlpha=l.op/100;
+    if(sh){ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=sh*2;ctx.shadowOffsetX=sh*.4;ctx.shadowOffsetY=sh*.6}
+    ctx.drawImage(tmp,0,0);ctx.restore();
+  }
+  if(handles){
+    const s=W/cv.getBoundingClientRect().width,q=L[act].q;
+    ctx.save();ctx.strokeStyle='#e8c547';ctx.lineWidth=1.5*s;ctx.setLineDash([6*s,4*s]);
+    ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.stroke();
+    ctx.setLineDash([]);ctx.fillStyle='#e8c547';ctx.strokeStyle='#17251f';
+    q.forEach(p=>{ctx.beginPath();ctx.arc(p[0],p[1],8*s,0,7);ctx.fill();ctx.stroke()});
+    ctx.restore();
+  }
+}
+/* UI */
+function tabs(){
+  $('#tabs').innerHTML='';
+  L.forEach((l,i)=>{const b=document.createElement('button');b.type='button';b.role='tab';b.textContent=l.n;b.setAttribute('aria-selected',i===act);b.onclick=()=>{act=i;tabs();sync();render()};$('#tabs').append(b)});
+}
+function sync(){
+  const l=L[act];$('#tx').value=l.text;$('#fn').value=l.font;$('#co').value=l.color;$('#sz').value=Math.round(l.wf*100);$('#op').value=l.op;labels();
+}
+function labels(){
+  $('#szv').textContent=$('#sz').value+'%';$('#opv').textContent=$('#op').value+'%';
+  ['sh','warm','con','vig','shp','jq'].forEach(i=>$('#'+i+'v').textContent=$('#'+i).value);
+}
+function refit(){const l=L[act];if(img&&!l.touched)fit(l);render()}
+$('#tx').oninput=e=>{L[act].text=e.target.value.replace(/\s+/g,' ');refit()};
+$('#fn').onchange=async e=>{await loadFont(e.target.value);L[act].font=e.target.value;refit()};
+$('#co').oninput=e=>{L[act].color=e.target.value;render()};
+$('#op').oninput=e=>{L[act].op=+e.target.value;labels();render()};
+$('#sz').oninput=e=>{
+  const l=L[act],nw=e.target.value/100,r=nw/l.wf;l.wf=nw;
+  if(l.q){const cx=l.q.reduce((s,p)=>s+p[0],0)/4,cy=l.q.reduce((s,p)=>s+p[1],0)/4;l.q=l.q.map(p=>[cx+(p[0]-cx)*r,cy+(p[1]-cy)*r])}
+  labels();render();
+};
+['sh','warm','con','vig','shp','jq'].forEach(i=>$('#'+i).oninput=()=>{labels();render()});
+$('#reset').onclick=()=>{if(img){fit(L[act]);render()}};
+/* image */
+function addPhoto(f){return new Promise(res=>{const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=async()=>{await fontsReady;let w=im.naturalWidth,h=im.naturalHeight;const m=2400;if(Math.max(w,h)>m){const s=m/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s)}P.push({im,w,h,layers:mk(),init:false});res()};im.onerror=res;im.src=rd.result};rd.readAsDataURL(f)})}
+async function loadImg(files){
+  const was=P.length;
+  for(const f of files)if(f.type.startsWith('image/'))await addPhoto(f);
+  if(P.length>was)select(was);
+}
+function select(i){
+  cur=i;const p=P[i];cv.width=p.w;cv.height=p.h;img=p.im;L=p.layers;act=Math.min(act,L.length-1);
+  L.forEach(l=>{if(!p.init||l.stale){l._k=null;fit(l);l.stale=false}});p.init=true;
+  $('#drop').hidden=true;cv.hidden=false;thumbs();tabs();sync();render();
+}
+function thumbs(){
+  const t=$('#thumbs');t.hidden=P.length<2;t.innerHTML='';
+  $('#saveAll').hidden=$('#genAll').hidden=P.length<2;
+  P.forEach((p,i)=>{const b=document.createElement('button');b.type='button';b.className='th';b.setAttribute('aria-selected',i===cur);b.setAttribute('aria-label','รูปที่ '+(i+1));const im=document.createElement('img');im.src=p.im.src;im.alt='';b.append(im);b.onclick=()=>select(i);t.append(b)});
+}
+$('#file').onchange=e=>loadImg([...e.target.files]);
+$('#change').onclick=()=>{$('#file').value='';$('#file').click()};
+const dz=$('#drop');
+['dragover','dragenter'].forEach(t=>dz.addEventListener(t,e=>{e.preventDefault();dz.classList.add('over')}));
+['dragleave','drop'].forEach(t=>dz.addEventListener(t,()=>dz.classList.remove('over')));
+dz.addEventListener('drop',e=>{e.preventDefault();loadImg([...e.dataTransfer.files])});
+/* drag handles */
+const pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]};
+function inPoly(p,q){let c=false;for(let i=0,j=3;i<4;j=i++){if((q[i][1]>p[1])!==(q[j][1]>p[1])&&p[0]<(q[j][0]-q[i][0])*(p[1]-q[i][1])/(q[j][1]-q[i][1])+q[i][0])c=!c}return c}
+cv.addEventListener('pointerdown',e=>{
+  if(!img)return;const p=pos(e),q=L[act].q,R=cv.width/cv.getBoundingClientRect().width*22;
+  const k=q.findIndex(c=>Math.hypot(c[0]-p[0],c[1]-p[1])<R);
+  if(k>=0)drag={k};else if(inPoly(p,q))drag={k:-1,last:p};else return;
+  cv.setPointerCapture(e.pointerId);
+});
+cv.addEventListener('pointermove',e=>{
+  if(!drag)return;const p=pos(e),l=L[act];
+  if(drag.k>=0)l.q[drag.k]=p;
+  else{const dx=p[0]-drag.last[0],dy=p[1]-drag.last[1];l.q=l.q.map(c=>[c[0]+dx,c[1]+dy]);drag.last=p}
+  l.touched=true;render();
+});
+['pointerup','pointercancel'].forEach(t=>cv.addEventListener(t,()=>drag=null));
+/* save */
+function sharpen(x,w,h,a){
+  if(!a)return;
+  const id=x.getImageData(0,0,w,h),d=id.data,o=new Uint8ClampedArray(d);
+  for(let y=1;y<h-1;y++)for(let i=1;i<w-1;i++){const p=(y*w+i)*4;for(let k=0;k<3;k++){const v=d[p+k];o[p+k]=v+a*(4*v-d[p+k-4]-d[p+k+4]-d[p+k-w*4]-d[p+k+w*4])}}
+  id.data.set(o);x.putImageData(id,0,0);
+}
+function blobOf(){
+  render(false);
+  const S=+$('#esz').value,sc=S?S/Math.max(cv.width,cv.height):1;
+  const c=document.createElement('canvas');c.width=Math.round(cv.width*sc);c.height=Math.round(cv.height*sc);
+  const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(cv,0,0,c.width,c.height);
+  sharpen(x,c.width,c.height,+$('#shp').value/100);
+  render(true);
+  return new Promise(r=>c.toBlob(r,'image/jpeg',+$('#jq').value/100));
+}
+async function save(all){
+  if(!img)return;
+  if(!dl){const b=await blobOf(),rd=new FileReader();rd.onload=()=>{$('#out').src=rd.result;$('#dlg').showModal()};rd.readAsDataURL(b);return}
+  const keep=cur;
+  for(const i of all?[...P.keys()]:[cur]){
+    select(i);const b=await blobOf();
+    try{await dl.save({filename:'photo-'+(i+1)+'.jpg',data:b})}catch(e){if(e&&e.code==='declined')break}
+  }
+  select(keep);
+}
+$('#save').onclick=()=>save(false);
+$('#saveAll').onclick=()=>save(true);
+$('#close').onclick=()=>$('#dlg').close();
+tabs();sync();
+/* ===== ตั้งค่าสำหรับ GitHub Pages ===== */
+const MODEL='claude-haiku-5-5';
+const ENDPOINT='https://api.anthropic.com/v1/messages'; // ถ้ามี proxy ของตัวเอง (เช่น Cloudflare Worker) ให้ใส่ URL ตรงนี้
+const KEY='rail_text_api_key';
+const store={get:()=>{try{return localStorage.getItem(KEY)||''}catch(e){return ''}},set:v=>{try{localStorage.setItem(KEY,v)}catch(e){}}};
+const blobB64=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result.split(',')[1]);f.readAsDataURL(b)});
+async function ghJson(q,o){
+  const direct=ENDPOINT.startsWith('https://api.anthropic.com'),key=($('#apikey').value||store.get()).trim();
+  if(direct&&!key)throw{code:'no_key'};
+  const content=[];
+  for(const b of (o.images||[]))content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:await blobB64(b)}});
+  content.push({type:'text',text:q});
+  const headers={'content-type':'application/json'};
+  if(direct){headers['x-api-key']=key;headers['anthropic-version']='2023-06-01';headers['anthropic-dangerous-direct-browser-access']='true'}
+  const r=await fetch(ENDPOINT,{method:'POST',headers,body:JSON.stringify({model:MODEL,max_tokens:1000,messages:[{role:'user',content}]})});
+  if(!r.ok)throw{code:r.status===401?'bad_key':r.status===429?'rate_limited':'error'};
+  const j=await r.json(),t=(j.content||[]).map(c=>c.text||'').join('');
+  return JSON.parse(t.replace(/```json|```/g,'').trim());
+}
+let samp={json:ghJson},imgOK=true;
+const dl={save:async({filename,data})=>{const a=document.createElement('a');a.href=URL.createObjectURL(data);a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}};
+document.addEventListener('DOMContentLoaded',()=>{const k=$('#apikey');k.value=store.get();k.oninput=()=>store.set(k.value.trim())});
+const small=p=>new Promise(r=>{const c=document.createElement('canvas'),s=Math.min(1,768/Math.max(p.w,p.h));c.width=Math.round(p.w*s);c.height=Math.round(p.h*s);c.getContext('2d').drawImage(p.im,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',.8)});
+async function ask(p){
+  const theme=$('#theme').value.trim(),o={modelTier:'quick'};
+  if(imgOK)o.images=[await small(p)];
+  const q='คุณเป็นนักเขียนแคปชันภาษาไทยสไตล์ลายมือบนรูปถ่าย ใช้โพสต์ลงโซเชียล\n'+(theme?'ธีมหรือโอกาส: '+theme+'\n':'')+(imgOK?'ดูรูปที่แนบและเขียนให้เข้ากับบรรยากาศในรูป\n':'')+'เขียนข้อความ 4 แบบที่ไม่ซ้ำกัน แต่ละแบบมี title (วลีสั้น ไม่เกิน 14 ตัวอักษร) และ main (ประโยคให้กำลังใจหรือความรู้สึก ไม่เกิน 45 ตัวอักษร ภาษาไทยเป็นธรรมชาติ) ตอบเป็น JSON array เท่านั้น: [{"title":"...","main":"..."}]';
+  return samp.json(q,o);
+}
+function apply(p,o){const[m,t]=p.layers;m.text=String(o.main||'').slice(0,80);t.text='“'+String(o.title||'').replace(/[“”"]/g,'')+'”';[m,t].forEach(l=>{if(!l.touched)l.stale=true})}
+const msg=t=>$('#genmsg').textContent=t;
+function fail(e){if(e&&e.code==='no_key')return msg('ใส่ API key ก่อน');if(e&&e.code==='bad_key')return msg('API key ไม่ถูกต้อง');msg(e&&e.code==='not_granted'?'ยังไม่ได้อนุญาตให้ใช้ Claude':e&&e.code==='rate_limited'?'ใช้งานถี่เกินไป รอสักครู่แล้วลองใหม่':'สร้างข้อความไม่สำเร็จ ลองใหม่อีกครั้ง')}
+$('#genOne').onclick=async()=>{
+  if(!img){msg('อัปโหลดรูปก่อน');return}
+  const b=$('#genOne');b.disabled=true;msg('กำลังคิดข้อความ…');
+  try{
+    const r=await ask(P[cur]),o=$('#opts');o.innerHTML='';
+    (Array.isArray(r)?r:[]).slice(0,5).forEach(x=>{const k=document.createElement('button');k.type='button';k.className='opt';const t=document.createElement('b');t.textContent=x.title;k.append(t,document.createTextNode(x.main));k.onclick=()=>{apply(P[cur],x);select(cur)};o.append(k)});
+    msg(o.children.length?'เลือกข้อความที่ชอบ':'ไม่ได้ข้อความ ลองใหม่อีกครั้ง');
+  }catch(e){fail(e)}
+  b.disabled=false;
+};
+$('#genAll').onclick=async()=>{
+  const b=$('#genAll');b.disabled=true;
+  try{
+    for(let i=0;i<P.length;i++){msg('กำลังคิดข้อความ '+(i+1)+'/'+P.length+'…');const r=await ask(P[i]);if(Array.isArray(r)&&r[0])apply(P[i],r[0])}
+    select(cur);msg('เสร็จแล้ว ปรับแต่งแต่ละรูปต่อได้');
+  }catch(e){fail(e)}
+  b.disabled=false;
+};
+</script>
+</body>
+</html>
